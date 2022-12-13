@@ -1,36 +1,45 @@
 package com.example.adultapp.ui.home
 
+
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.example.adultapp.R
+import androidx.fragment.app.viewModels
+import androidx.leanback.app.BrowseSupportFragment
+import androidx.lifecycle.Observer
+import com.example.adultapp.base.BaseBrowseFragment
 import com.example.adultapp.base.BaseFragment
-import com.example.adultapp.databinding.FragmentHomeBinding
+import com.example.adultapp.global.helper.Resources
+import com.example.adultapp.global.utils.DebugLog
+import com.example.adultapp.global.utils.TAG
+
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseBrowseFragment() {
 
-    lateinit var binding: FragmentHomeBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        // Inflate the layout for this fragment
-        binding = FragmentHomeBinding.inflate(inflater,container,false)
-        return binding.root
-
-    }
+    private val viewModel : HomeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Ui Logic
+        viewModel.allVideoResult.observe(viewLifecycleOwner, Observer { resource->
+          when(resource){
+
+              is Resources.Idle ->{DebugLog.d(TAG,"Idle....")}
+              is Resources.Loading ->{DebugLog.d(TAG,"Loading....")}
+              is Resources.Success ->{
+                  DebugLog.d(TAG,"Success !!!")
+                  DebugLog.d(TAG,"Item 1 ---> ${resource.data[0]}")
+              }
+              is Resources.Error ->{DebugLog.d(TAG,"Error : ${resource.error} ")}
+          }
+
+        })
+
     }
+
+
 
 
 }

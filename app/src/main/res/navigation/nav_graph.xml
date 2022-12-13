@@ -15,6 +15,8 @@
 
         <action
             android:id="@+id/action_splash_to_home"
+            app:popUpTo="@id/nav_splash"
+            app:popUpToInclusive="true"
             app:destination="@+id/nav_home"/>
     </fragment>
 
