@@ -11,6 +11,24 @@
         android:id="@+id/nav_splash"
         android:name="com.example.adultapp.ui.splash.SplashFragment"
         tools:layout="@layout/fragment_splash"
-        android:label="Splash"/>
+        android:label="Splash">
+
+        <action
+            android:id="@+id/action_splash_to_home"
+            app:destination="@+id/nav_home"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.adultapp.ui.home.HomeFragment"
+        tools:layout="@layout/fragment_home"
+        android:label="Home"/>
+
+    <fragment
+        android:id="@+id/nav_details"
+        android:name="com.example.adultapp.ui.details.DetailsFragment"
+        tools:layout="@layout/fragment_details"
+        android:label="Details"/>
+
 
 </navigation>

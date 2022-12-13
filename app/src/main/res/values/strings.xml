@@ -1,4 +1,6 @@
 <resources>
+
+    <!-- Android TV   -->
     <string name="app_name">AdultApp</string>
     <string name="browse_title">Videos by Your Company</string>
     <string name="related_movies">Related Videos</string>
@@ -12,6 +14,26 @@
     <string name="buy_1">Buy and Own</string>
     <string name="buy_2">AT $9.99</string>
     <string name="movie">Movie</string>
+
+
+    <!-- Global values -->
+    <string name="global_error_title">Erreur </string>
+    <string name="global_error_message">Une Erreur est survenus, veuillez réessayer plus tard </string>
+    <string name="global_error">Une Erreur est survenus  </string>
+    <string name="global_error_internet">Vérifier votre connexion</string>
+    <string name="global_error_action_repeat">Réessayer</string>
+    <string name="global_ok">OK</string>
+    <string name="global_no">NO</string>
+    <string name="global_yes">Yes</string>
+    <string name="global_all">Tout</string>
+
+
+    <!-- Splash values -->
+    <string name="Splash_text">Adult APP</string>
+
+
+
+
 
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
