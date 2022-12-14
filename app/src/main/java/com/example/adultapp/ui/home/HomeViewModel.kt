@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.load.engine.Resource
 import com.example.adultapp.base.BaseAndroidViewModel
 import com.example.adultapp.data.model.category.DataCategory
 import com.example.adultapp.data.model.videos.DataVideos
 import com.example.adultapp.data.repository.abs.CategoryRepository
 import com.example.adultapp.data.repository.abs.VideoRepository
+import com.example.adultapp.global.helper.Navigation
 import com.example.adultapp.global.helper.Resources
 import com.example.adultapp.global.listener.SchedulerProvider
 import com.example.adultapp.global.utils.DebugLog
@@ -34,7 +36,7 @@ class HomeViewModel @Inject constructor(
         getAllVideos()
     }
 
-     fun getAllVideos(){
+     private fun getAllVideos(){
 
         viewModelScope.launch(schedulerProvider.dispatchersUI()) {
 
@@ -42,7 +44,7 @@ class HomeViewModel @Inject constructor(
             try {
 
                 val list = withContext(schedulerProvider.dispatchersIO()){
-                    videoRepository.getAllVideos()
+                    videoRepository.getBestVideos()
                 }
                 allVideoResult.value = Resources.Success(list)
 
@@ -52,10 +54,18 @@ class HomeViewModel @Inject constructor(
             }catch (e:Exception){
 
                 val errorMessage = handleThrowableText(e)
-                allVideoResult.value = Resources.Error(e.message!!)
+                allVideoResult.value = Resources.Error(errorMessage)
 
             }
 
+
+        }
+    }
+
+    fun navigateDetails(videoId :Int){
+        if (allVideoResult.value is Resources.Success) {
+
+            navigate(Navigation.NavigationDetails(videoId))
 
         }
     }

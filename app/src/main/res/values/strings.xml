@@ -32,6 +32,9 @@
     <string name="Splash_text">Adult APP</string>
 
 
+    <string name="browse_header_recommended" > Recommended </string>
+    <string name="browse_header_best"> Best </string>
+    <string name="browse_header_all"> All videos </string>
 
 
 

@@ -23,8 +23,15 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.adultapp.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home"
-        android:label="Home"/>
+        android:label="Home">
+        <action
+            android:id="@+id/action_home_to_details"
+            app:destination="@+id/nav_details">
+            <argument
+                android:name="videoId"
+                app:argType="integer"/>
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_details"
