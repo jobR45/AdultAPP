@@ -16,8 +16,7 @@ import com.example.adultapp.global.listener.SchedulerProvider
 import com.example.adultapp.global.utils.DebugLog
 import com.example.adultapp.global.utils.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,24 +28,33 @@ class HomeViewModel @Inject constructor(
 ) :
     BaseAndroidViewModel(application) {
 
-    val allVideoResult = MutableLiveData<Resources<List<DataVideos>>>(Resources.Idle())
+    val videoResult = MutableLiveData<Resources<List<List<DataVideos>>>>(Resources.Idle())
     val listCategory = MutableLiveData<List<DataCategory>>()
+
+    private val listResult = mutableListOf<Deferred<List<DataVideos>>>()
 
     init {
         getAllVideos()
     }
 
-     private fun getAllVideos(){
+    private fun getAllVideos(){
 
         viewModelScope.launch(schedulerProvider.dispatchersUI()) {
 
-            allVideoResult.value = Resources.Loading()
+            videoResult.value = Resources.Loading()
             try {
 
-                val list = withContext(schedulerProvider.dispatchersIO()){
-                    videoRepository.getBestVideos()
+                addAsync(videoRepository.getAllVideos())
+                addAsync(videoRepository.getBestVideos())
+                addAsync(videoRepository.getRecommendedVideos("6038221"))  //test value for video_Ids
+
+                if (listResult.isNotEmpty()){
+                    videoResult.value = Resources.Success(listResult.awaitAll())
                 }
-                allVideoResult.value = Resources.Success(list)
+                else{
+                    videoResult.value = Resources.Error("Empty list")
+                }
+
 
 
 
@@ -54,7 +62,7 @@ class HomeViewModel @Inject constructor(
             }catch (e:Exception){
 
                 val errorMessage = handleThrowableText(e)
-                allVideoResult.value = Resources.Error(errorMessage)
+                videoResult.value = Resources.Error(e.message!!)
 
             }
 
@@ -62,8 +70,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private suspend fun addAsync( repo : List<DataVideos>  ){
+        withContext(schedulerProvider.dispatchersIO()){
+            val list = async {
+                repo
+            }
+            listResult.add(list)
+
+
+        }
+    }
+
     fun navigateDetails(videoId :Int){
-        if (allVideoResult.value is Resources.Success) {
+        if (videoResult.value is Resources.Success) {
 
             navigate(Navigation.NavigationDetails(videoId))
 

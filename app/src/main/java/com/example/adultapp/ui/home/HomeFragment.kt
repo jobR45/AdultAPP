@@ -57,7 +57,7 @@ class HomeFragment : BaseBrowseFragment() {
     }
 
     private fun observeData() {
-        viewModel.allVideoResult.observe(viewLifecycleOwner, Observer { resource ->
+        viewModel.videoResult.observe(viewLifecycleOwner, Observer { resource ->
             when (resource) {
 
                 is Resources.Idle -> {
@@ -68,10 +68,12 @@ class HomeFragment : BaseBrowseFragment() {
                 }
                 is Resources.Success -> {
 
-                    displayData(resource.data)
+                    displayData(resource.data[0],resource.data[1],resource.data[2])
                     startEntranceTransition()
+
+
                     DebugLog.d(TAG, "Success !!!")
-                    DebugLog.d(TAG, "Item 1 ---> ${resource.data[0]}")
+                    DebugLog.d(TAG, "SIZE  ---> ${resource.data.size}")
                 }
                 is Resources.Error -> {
                     DebugLog.d(TAG, "Error : ${resource.error} ")
@@ -81,27 +83,32 @@ class HomeFragment : BaseBrowseFragment() {
         })
     }
 
-    private fun displayData(listVideos: List<DataVideos>) {
+    private fun displayData(
+        listAll: List<DataVideos>,
+        listBest: List<DataVideos>,
+        listRecc: List<DataVideos>,
+
+    ) {
+
         val adapter = ArrayObjectAdapter(ListRowPresenter())
         val headerRecommended = HeaderItem(RECOMMENDED_ID, requireActivity().getString(R.string.browse_header_recommended))
         val headerBest = HeaderItem(BEST_ID, requireActivity().getString(R.string.browse_header_best))
         val headerAll = HeaderItem(ALL_ID, requireActivity().getString(R.string.browse_header_all))
-       /* for (data in listVideos) {
-            val rowAdapter = ArrayObjectAdapter(PosterPresenter())
-            rowAdapter.add(data)
-
-            adapter.add(ListRow(headerItem, rowAdapter))
-        }*/
-
-        val rowAdapter = ArrayObjectAdapter(PosterPresenter())
-        rowAdapter.addAll(0,listVideos)
-        rowAdapter.addAll(1,listVideos)
-        rowAdapter.addAll(2,listVideos)
 
 
-        adapter.add(ListRow(headerRecommended, rowAdapter))
-        adapter.add(ListRow(headerBest, rowAdapter))
-        adapter.add(ListRow(headerAll, rowAdapter))
+        val rowAdapterAll = ArrayObjectAdapter(PosterPresenter())
+        val rowAdapterBest = ArrayObjectAdapter(PosterPresenter())
+        val rowAdapterRecc = ArrayObjectAdapter(PosterPresenter())
+
+
+        rowAdapterRecc.addAll(0,listRecc)
+        rowAdapterBest.addAll(0,listBest)
+        rowAdapterAll.addAll(0,listAll)
+
+
+        adapter.add(ListRow(headerRecommended, rowAdapterRecc))
+        adapter.add(ListRow(headerBest, rowAdapterBest))
+        adapter.add(ListRow(headerAll, rowAdapterAll))
 
         this.adapter = adapter
 
